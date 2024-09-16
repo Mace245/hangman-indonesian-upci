@@ -1,24 +1,25 @@
 from custom_words import shuffled_answers
 
-title = 'Family Hang(man) Time!'
-prompt = "Guess a letter: "
+title = 'Firt Meet uPCI Hang(man) Time!'
+prompt = "Tebak Huruf atau kata: "
 
 def answerer():
     answer = shuffled_answers.popitem()
     word = answer[0].upper()
-    player = answer[1]['player']
-    theme = answer[1]['theme']
     hint = answer[1]['hint']
-    return word, player, theme, hint
+    return word, hint
 
-def play(word, player, theme, hint):
+
+def play(word, hint):
     guessed = False
+    first_hint = True
     guessed_letters = []
     guessed_words = []
     word_completion = ""
     tries = 6
     counter = len(word.split())
     holder = word.split()
+
     while counter > 0:
         word_completion += "_" * len(holder[0]) + "\n"
         counter -= 1
@@ -27,15 +28,15 @@ def play(word, player, theme, hint):
     print(display_hangman(tries))
     print(word_completion)
     print('\n')
-    print(player)
     while not guessed and tries > 0:
         guess = input(prompt).upper()
+        print("\n\n")
 
-        reguess = f"You already guessed '{guess}', dummy."
-        wrong = f"No! '{guess}' is NOT in the word. Type '?' if you need a hint, but it will cost a limb."
-        right = f"You got lucky...'{guess}' is in the word"
+        reguess = f"'{guess}' sudah di tebak."
+        wrong = f"'{guess}' BUKAN huruf yang di dalam kata. \nBoleh minta petunjuk, tetapi akan dikenakan denda."
+        right = f"Sungguh hoki...'{guess}' merupakan huruf dalam kata"
 
-        if len(guess) == 1 and guess.isalpha():
+        if len(guess) == 1 and guess.isalpha(): # Letter guessing
             if guess in guessed_letters:
                 print(reguess)
             elif guess not in word:
@@ -54,24 +55,28 @@ def play(word, player, theme, hint):
                     guessed = True
         elif guess == '?':
             tries -= 1
+            if first_hint == True: 
+                print("Dendanya adalah ANGGOTA BADAN!\n")
+                first_hint = False
+            print("Petunjuknya adalah:")
             print(hint)
-        elif len(guess) == len(word) and guess.isalpha():
+        elif len(guess) == len(word) and guess.isalpha(): # Full word guessing
             if guess in guessed_words:
                 print(reguess)
             if guess != word:
-                print(f"Ha! Nice try, '{guess}' is not the word. Maybe stick with letters, it's easier.")
+                print(f"Ha! Usaha yang bagus, '{guess}' bukanlah kata yang tepat. Mungkin lebih baik tebak menggunakan huruf, lebih mudah.")
             else:
                 guessed = True
                 word_completion = word
         else:
-            print("\nNot a valid guess. That is so obviously not a valid guess. Please, this is serious.")
+            print("\nBukan tebakan yang valid. Itu jelas bukan tebakan yang valid. Tolong, ini serius.")
         print(display_hangman(tries))
         print(word_completion)
         print('\n')
     if guessed:
-        print(f"{player}, you're a winner! The theme is {theme}.")
+        print(f"MENANG | Muantap bosqu")
     else:
-        print(f"No surprise {player} ran out of tries. The answer is {word}, and the theme is {theme}.")
+        print(f"KALAH | Better luck next time!")
 
 
 
@@ -146,11 +151,11 @@ def display_hangman(tries):
 
 def main():
     # try:
-        answer, player, theme, hint = answerer()
-        play(answer, player, theme, hint)
-        while input("Play Again? (Y/N) ").upper() == "Y":
-            answer, player, theme, hint = answerer()
-            play(answer, player, theme, hint)
+        answer, hint = answerer()
+        play(answer, hint)
+        while input("Maen lagi? (Y/N) ").upper() == "Y":
+            answer, hint = answerer()
+            play(answer, hint)
     # except:
     #     print("\n\nOh no, there are no more words!\n\n")
 
